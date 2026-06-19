@@ -34,7 +34,7 @@ Next.js 16 (App Router, TS) on **Cloudflare Workers via OpenNext**; UI = shadcn/
 A kids'-PII app is exactly where you don't want to hand-roll auth or authz. **Supabase Auth** (battle-tested) + **Postgres RLS** gives database-enforced row isolation that maps perfectly to "a parent can only touch their own children's enrollments and signed forms," and consolidates auth + DB + storage into one platform → faster, smaller surface area. Trade accepted: PII lives in Supabase (reputable/SOC2, exportable) and we add one external dependency + a keep-warm chore.
 
 ## Running Supabase on Cloudflare Workers (integration notes)
-- **`@supabase/ssr`** for cookie-based sessions: a **server client** (Server Components / Route Handlers / Server Actions — note Next 16 `cookies()` is **async**, `await` it), a **browser client**, and a **session-refresh in `proxy.ts`** (Next 16 renamed `middleware`→`proxy`, nodejs only — **validate this on workerd in P0**, it's the #1 integration risk).
+- **`@supabase/ssr`** for cookie-based sessions: a **server client** (Server Components / Route Handlers / Server Actions — note Next 16 `cookies()` is **async**, `await` it), a **browser client**, and a session-refresh in an **Edge `middleware.ts`**. ⚠️ **Gotcha (hit in P0):** OpenNext/Cloudflare rejects Next 16's nodejs `proxy.ts` ("Node.js middleware is not currently supported") — use **Edge `middleware.ts`** instead (Supabase's SSR refresh is edge-safe). The full bundle now builds for workerd.
 - **Query as the user** through `supabase-js`/the SSR server client so **RLS applies**. Use the **service-role key only** in server-guarded admin/system paths (PDF generation, cron, webhooks) — it **bypasses RLS**, so gate it carefully.
 - **Env/secrets** (Cloudflare): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (public — safe with RLS), `SUPABASE_SERVICE_ROLE_KEY` (**server secret, never client**), `RESEND_API_KEY`, `TURNSTILE_*`, `STRIPE_*`. `wrangler.jsonc` no longer needs D1/R2 bindings (keep `ASSETS`/`IMAGES`).
 
@@ -73,7 +73,7 @@ Storage: a **private `signed-forms` bucket** with policies mirroring the above (
 Render form → parent affirms (typed name + "I agree" + optional drawn signature via `signature_pad`) → `pdf-lib` stamps a PDF in the Worker → upload to Supabase Storage → write an **append-only audit row** (signer, profile id, timestamp, IP/UA, template **version**, content hash). Follows the US **E-SIGN** pattern (intent + attribution + retention). **Consent-form wording needs org/legal review before go-live.**
 
 ## Keep-warm (required, free)
-Free Supabase projects pause after ~7 days idle. A **Cloudflare Cron Trigger** (e.g., every 3 days) hits a trivial Supabase read to reset the timer. (During active cohorts, real logins keep it warm anyway.) Same Cron handles event reminder emails.
+Free Supabase projects pause after ~7 days idle. A **GitHub Actions scheduled workflow** (`.github/workflows/keepalive.yml`, every 3 days) pings the public `keepalive` table to reset the timer — needs repo secrets `SUPABASE_URL` + `SUPABASE_ANON_KEY`. (During active cohorts, real logins keep it warm anyway.) Event reminder emails (P3) can reuse this or a Cloudflare Cron worker.
 
 ## Email
 Supabase's built-in auth email is rate-limited/testing-only, so configure **Resend as Supabase's custom SMTP** for magic-link/verification mail, and use Resend for our own confirmations/announcements. **Watch the ~100 emails/day free cap** (now covers auth emails too); if parent-wide blasts grow, move to **Brevo (300/day)** or batch over time.
@@ -82,7 +82,7 @@ Supabase's built-in auth email is rate-limited/testing-only, so configure **Rese
 Supabase: 500 MB DB · 1 GB storage · 50k MAU · 5 GB egress · **2 active projects** (prod + staging) · pauses at 7 days idle (mitigated). Cloudflare Workers/Cron/Turnstile free. Resend ~100/day. **Total fixed cost: $0.** Domain already owned. (Supabase Pro $25/mo removes the pause + raises caps **if ever needed** — not required now.)
 
 ## Risks & caveats
-1. **`@supabase/ssr` session-refresh in `proxy.ts` on workerd (OpenNext)** — the #1 integration risk; validate in `pnpm preview` in **P0** before any UI.
+1. ~~`@supabase/ssr` session-refresh on workerd~~ — **RESOLVED in P0:** OpenNext needs an **Edge `middleware.ts`** (nodejs `proxy.ts` is unsupported); the bundle now builds for workerd. Remaining: the *live* sign-in + RLS read against a real Supabase project.
 2. **Minors' PII now in Supabase** — needs RLS (have it), least-data, a real **privacy + retention policy**, and (parent-signed mitigates) **COPPA** awareness. **Not legal advice — counsel reviews consent + privacy.**
 3. **RLS only protects you if you query as the user**; the service-role key bypasses RLS — confine it to guarded server paths.
 4. **Free-tier pause** — neutralized by the keep-warm cron, but it must ship in P0.
@@ -91,7 +91,7 @@ Supabase: 500 MB DB · 1 GB storage · 50k MAU · 5 GB egress · **2 active proj
 7. This is a small **SaaS** now — more to build, secure, and maintain than a brochure.
 
 ## Phased build
-- **P0 — Foundation:** scaffold from the `kevincameron` starter; create the Supabase project; wire `@supabase/ssr` (server/browser/`proxy.ts`) + **prove auth + an RLS read on workerd** via `pnpm preview`; add the keep-warm cron + Turnstile; first migration (schema + RLS).
+- **P0 — Foundation** ✅ *scaffolded 2026-06-19* (builds for Next + workerd): app + `@supabase/ssr` (server/browser + **Edge `middleware.ts`**), first migration (schema + RLS), keep-warm GitHub Action, auth smoke-test pages (`/login`, `/dashboard`). **Remaining:** create the Supabase project + run the live sign-in/RLS test on `pnpm preview`.
 - **P1 — Enrollment core:** parent register/login + child profiles; browse programs; apply/enroll; admin **program CRUD** + **roster** view (RLS-gated).
 - **P2 — Forms & e-sign:** templates (enrollment, consent, photo release) → in-app sign → PDF in Storage → admin **signature-completion tracking**.
 - **P3 — Events & updates:** event CRUD (location/times); RSVP; announcements + Resend + Cron reminders; "where to go".

@@ -1,0 +1,23 @@
+name: Supabase keep-warm
+
+# Free Supabase projects pause after ~7 days of inactivity. This pings the
+# public `keepalive` table every 3 days so the enrollment portal never wakes
+# to a paused database. Requires two repo secrets (Settings → Secrets → Actions):
+#   SUPABASE_URL        = your project URL (https://xxxx.supabase.co)
+#   SUPABASE_ANON_KEY   = the anon public key
+on:
+  schedule:
+    - cron: "17 7 */3 * *" # every 3 days at 07:17 UTC
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST
+        run: |
+          curl -fsS \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/keepalive?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" > /dev/null
+          echo "Supabase pinged at $(date -u)"
