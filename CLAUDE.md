@@ -24,7 +24,7 @@ Do **not** re-research or re-decide what these already settle. If something chan
 ## Build status (updated 2026-06-19)
 
 - **Phase: PRE-BUILD.** No `package.json` / app code yet. Research, brief, and brand capture are done.
-- **Git initialized 2026-06-19** — `main` holds the initial commit only; ongoing work on branch **`setup/foundation`** (mirrors the `kevincameron` convention). Commit only when asked.
+- **Git (2026-06-19):** initialized and pushed to **GitHub** — remote `origin` = `git@github.com:DVitsme/standmentorship.git`; working branch **`main`** tracks `origin/main`. (The interim `setup/foundation` branch was consolidated into `main`.) Commit/push only when asked.
 - **Next:** produce the claude.ai/design homepage, then scaffold the Next.js app (mirror `kevincameron`).
 - Append dated notes here as work ships; never silently rewrite past status.
 
