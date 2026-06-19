@@ -32,3 +32,9 @@ pnpm-debug.log*
 Thumbs.db
 *.swp
 .idea/
+
+# Content library — full-res scraped originals are large (~1.8GB): keep LOCAL, don't commit.
+# The committed, portable record is the catalog (catalog.csv / CATALOG.md) + Wix CDN URLs,
+# plus optimized previews under content-library/preview/ (committed).
+/content-library/images/
+/content-library/_pages_html/
