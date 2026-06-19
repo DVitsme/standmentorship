@@ -19,12 +19,14 @@ Do **not** re-research or re-decide what these already settle. If something chan
 | `research/README.md` | Index to the full research dossier (`research/website|external|people|raw`) |
 | `redesign-brief.md` | IA/sitemap, navbar/footer, page specs, visual + tech direction |
 | `brand-assets/README.md` | Logo files, current palette/fonts, the keep/adjust/change plan |
+| `content-library/CATALOG.md` | Image/video asset library — captions + recommended hero/title-card per page |
 | `/home/nero/Clients/NextJs/kevincameron/CLAUDE.md` | **The build conventions bible** — mirror it when coding |
 
 ## Build status (updated 2026-06-19)
 
 - **Phase: PRE-BUILD.** No `package.json` / app code yet. Research, brief, and brand capture are done.
 - **Git (2026-06-19):** initialized and pushed to **GitHub** — remote `origin` = `git@github.com:DVitsme/standmentorship.git`; working branch **`main`** tracks `origin/main`. (The interim `setup/foundation` branch was consolidated into `main`.) Commit/push only when asked.
+- **Content library built (2026-06-19):** `content-library/CATALOG.md` — 136 scraped site images (≤1600px previews committed; 1.8 GB full-res originals kept local + gitignored) + per-image vision captions + a recommended hero/title-card per page + external image/video research with rights notes. Consult before sourcing imagery.
 - **Next:** produce the claude.ai/design homepage, then scaffold the Next.js app (mirror `kevincameron`).
 - Append dated notes here as work ships; never silently rewrite past status.
 
