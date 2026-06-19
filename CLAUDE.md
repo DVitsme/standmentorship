@@ -20,6 +20,7 @@ Do **not** re-research or re-decide what these already settle. If something chan
 | `redesign-brief.md` | IA/sitemap, navbar/footer, page specs, visual + tech direction |
 | `brand-assets/README.md` | Logo files, current palette/fonts, the keep/adjust/change plan |
 | `content-library/CATALOG.md` | Image/video asset library — captions + recommended hero/title-card per page |
+| `docs/app-architecture.md` | The enrollment **app** — auth, data model, e-sign, free-stack choices, phasing |
 | `/home/nero/Clients/NextJs/kevincameron/CLAUDE.md` | **The build conventions bible** — mirror it when coding |
 
 ## Build status (updated 2026-06-19)
@@ -31,6 +32,8 @@ Do **not** re-research or re-decide what these already settle. If something chan
 - Append dated notes here as work ships; never silently rewrite past status.
 
 ## Locked decisions (do not contradict without updating this list)
+
+**★ PRIMARY GOAL (updated 2026-06-19): EASY ENROLLMENT** — the project is now an **application**, not just a brochure site. It needs a **parent portal** (register/login, manage child profiles, **e-sign consent forms**, RSVP to events, get location/"where to go" updates) and an **admin portal for Coach D** (create/manage programs & events, view rosters, track who has signed which forms, edit event location/times). Marketing pages still matter but serve enrollment. **Full free-stack architecture + data model: `docs/app-architecture.md`** — it owns the app-stack detail and wins where it conflicts with the forms/IA notes below.
 
 1. **Stack:** Next.js 16 (App Router, TS strict) + Tailwind v4 (CSS-first, tokens in `app/globals.css`, no config file) + shadcn/ui `new-york` + lucide. Mirror `kevincameron` / the `digitaldog-site-starter` pattern.
 2. **Hosting:** Cloudflare Workers via **OpenNext** (`@opennextjs/cloudflare`, `wrangler.jsonc`, `open-next.config.ts`). Package manager **pnpm**.

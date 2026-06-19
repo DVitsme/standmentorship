@@ -1,5 +1,7 @@
 # S.T.A.N.D Mentorship — Website Redesign Brief
 
+> **⚠️ UPDATE 2026-06-19 — PRIMARY GOAL CHANGED to EASY ENROLLMENT; scope expanded to a parent/admin portal app.** The goal hierarchy in §1–§4 below (which led with funding/credibility) is **superseded** — see `docs/app-architecture.md` for the app architecture + free stack. The sitemap, navbar/footer, brand, visual, and base-tech sections remain valid, with authenticated portal pages added.
+
 **Date:** 2026-06-17 · **Basis:** `research/SUMMARY.md` and the full research dossier · **Stage:** pre-design (no code/design started yet)
 **Org:** S.T.A.N.D Mentorship — legal name *Stepping Towards A New Destiny Corporation* · 501(c)(3) (EIN 82-1192567) · Baltimore City/County + Howard County, MD
 
