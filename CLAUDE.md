@@ -21,6 +21,7 @@ Do **not** re-research or re-decide what these already settle. If something chan
 | `brand-assets/README.md` | Logo files, current palette/fonts, the keep/adjust/change plan |
 | `content-library/CATALOG.md` | Image/video asset library — captions + recommended hero/title-card per page |
 | `docs/app-architecture.md` | The enrollment **app** — auth, data model, e-sign, free-stack choices, phasing |
+| `docs/P0-setup.md` | Runbook: create the Supabase project, fill env, apply migration, validate auth/RLS |
 | `/home/nero/Clients/NextJs/kevincameron/CLAUDE.md` | **The build conventions bible** — mirror it when coding |
 
 ## Build status (updated 2026-06-19)
