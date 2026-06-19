@@ -41,6 +41,7 @@ Do **not** re-research or re-decide what these already settle. If something chan
 4. **Donations:** port `kevincameron`'s Stripe Payment-Element slice, **but flip the framing to tax-deductible** — STAND is a real **501(c)(3)**; show **EIN 82-1192567**. Add recurring gifts.
 5. **Forms (enroll/contact):** native branded forms → `/api/*` → Resend + reCAPTCHA. Replace raw Google Forms.
 6. **IA:** 10 core pages + 2 legal + an Event-Detail template (see `redesign-brief.md` §5). Content as typed `content/*.ts`.
+7. **Data / auth / storage = Supabase** (Postgres + Auth + Storage, **RLS-enforced**), accessed via `supabase-js` from the Cloudflare Workers app; free tier kept alive by a **Cron keep-warm** ping. Replaces the earlier Better Auth + D1 + R2 idea. E-sign = `signature_pad` + `pdf-lib` → Supabase Storage. Full data model + RLS + risks: `docs/app-architecture.md`.
 
 ## Org facts that must stay consistent (copy guardrails)
 
